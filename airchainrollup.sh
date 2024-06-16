@@ -81,20 +81,6 @@ else
     sudo apt install -y wget
 fi
 
-# 检查是否已安装 go
-if command -v go >/dev/null 2>&1; then
-    echo "go 已安装，跳过安装步骤。"
-else
-    echo "下载并安装 Go..."
-    wget -c https://golang.org/dl/go1.22.3.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
-    source ~/.bashrc
-fi
-
-# 验证安装后的 Go 版本
-echo "当前 Go 版本："
-go version
-
 function install_node() {
 
 
@@ -138,11 +124,22 @@ WantedBy=multi-user.target
 EOF
     systemctl daemon-reload && systemctl enable evmosd
     systemctl restart evmosd
-    #部署avail轻节点#
+
     mkdir  /data/airchains/availda && cd /data/airchains/availda
-    wget https://github.com/availproject/avail-light/releases/download/v1.9.1/avail-light-linux-amd64.tar.gz
-    tar xvf avail-light-linux-amd64.tar.gz
-    mv avail-light-linux-amd64 avail-light  && chmod +x avail-light
+
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        URL="https://github.com/availproject/avail-light/releases/download/v1.9.1/avail-light-linux-arm64.tar.gz"
+        BIN="avail-light-linux-arm64"
+    else
+        URL="https://github.com/availproject/avail-light/releases/download/v1.9.1/avail-light-linux-amd64.tar.gz"
+        BIN="avail-light-linux-amd64"
+    fi
+    
+    # 下载并解压
+    wget $URL
+    tar xvf $(basename $URL)
+    mv $BIN avail-light && chmod +x avail-light
 
     mkdir -p ~/.avail/turing/bin
     mkdir -p ~/.avail/turing/data
