@@ -216,7 +216,7 @@ NODE_ID=$(grep 'node_id =' $CONFIG_PATH | awk -F'"' '{print $2}')
 LOCAL_IP=$(hostname -I | awk '{print $1}')
 
 # 定义 JSON RPC URL 和其他参数
-JSON_RPC="https://airchains-testnet-rpc.cosmonautstakes.com"
+JSON_RPC="https://junction-testnet-rpc.synergynodes.com"
 INFO="EVM Track"
 TRACKS="air_address"
 BOOTSTRAP_NODE="/ip4/$LOCAL_IP/tcp/2300/p2p/$NODE_ID"
@@ -225,7 +225,7 @@ BOOTSTRAP_NODE="/ip4/$LOCAL_IP/tcp/2300/p2p/$NODE_ID"
 create_station_cmd="go run cmd/main.go create-station \
     --accountName wallet \
     --accountPath $HOME/.tracks/junction-accounts/keys \
-    --jsonRPC \"https://airchains-testnet-rpc.cosmonautstakes.com\" \
+    --jsonRPC \"https://junction-testnet-rpc.synergynodes.com\" \
     --info \"WASM Track\" \
     --tracks \"$AIR_ADDRESS\" \
     --bootstrapNode \"/ip4/$LOCAL_IP/tcp/2300/p2p/$NODE_ID\""
