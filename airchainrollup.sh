@@ -1,5 +1,4 @@
-docker run -d --name airchains ubuntu:20.04 sleep infinity
-docker exec -it airchains bash -c
+
 # 检查是否已安装 build-essential
 if dpkg-query -W build-essential >/dev/null 2>&1; then
     echo "build-essential 已安装，跳过安装步骤。"
@@ -206,7 +205,7 @@ fi
     #获取nodeid#
     grep node_id ~/.tracks/config/sequencer.toml
     #修改gas#
-    sed -i.bak 's/utilis\.GenerateRandomWithFavour(1200, 2400, \[2\]int{1500, 2000}, 0\.7)/utilis.GenerateRandomWithFavour(240, 340, [2]int{260, 300}, 0.7)/' /data/airchains/tracks/junction/createStation.go
+    sed -i.bak 's/utilis\.GenerateRandomWithFavour(1200, 2400, \[2\]int{1500, 2000}, 0\.7)/utilis.GenerateRandomWithFavour(2400, 3400, [2]int{2600, 5000}, 0.7)/' /data/airchains/tracks/junction/createStation.go
 
     cd /data/airchains/tracks/ && make build
     cat $HOME/.tracks/junction-accounts/keys/node.wallet.json
@@ -247,7 +246,7 @@ create_station_cmd="/data/airchains/tracks/build/tracks create-station \
     --jsonRPC \"https://airchains-rpc.kubenode.xyz/\" \
     --info \"EVM Track\" \
     --tracks \"$AIR_ADDRESS\" \
-    --bootstrapNode \"/ip4/$LOCAL_IP/tcp/2300/p2p/$node_id\""
+    --bootstrapNode \"/ip4/$LOCAL_IP/tcp/2300/p2p/$NODE_ID\""
 
 echo "Running command:"
 echo "$create_station_cmd"
@@ -314,6 +313,7 @@ rm -rf data
 rm -rf .evmosd
 rm -rf .avail
 rm -rf .tracks
+rm -rf data
 sudo systemctl stop availd.service
 sudo systemctl stop evmosd.service
 sudo systemctl stop tracksd.service
@@ -323,6 +323,8 @@ sudo systemctl disable tracksd.service
 sudo pkill -9 availd
 sudo pkill -9 evmosd
 sudo pkill -9 tracksd
+sudo journalctl --vacuum-time=1s
+
 }
 
 # 主菜单
@@ -365,6 +367,3 @@ function main_menu() {
 # 显示主菜单
 main_menu
 
-
-# 显示主菜单
-main_menu
